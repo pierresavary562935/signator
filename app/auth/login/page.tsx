@@ -1,18 +1,11 @@
-"use client";
-
-import { Button } from "@/components/ui/button";
-import { loginCredentials, loginGitHub } from "@/lib/actions/auth";
+import { LoginForm } from "@/app-components/LoginForm";
 
 export default function LoginPage() {
     return (
-        <div className="flex flex-col items-center justify-center h-screen">
-            <h2 className="text-2xl font-bold mb-4">Sign In</h2>
-            <Button className="mb-2" onClick={() => loginGitHub()}>
-                Sign in with Github
-            </Button>
-            <Button variant="secondary" onClick={() => loginCredentials("test@example.com", "password123")}>
-                Sign in with Credentials
-            </Button>
+        <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-background p-6 md:p-10">
+            <div className="w-full max-w-sm">
+                <LoginForm />
+            </div>
         </div>
-    );
+    )
 }

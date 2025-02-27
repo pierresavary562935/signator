@@ -14,7 +14,7 @@ export default function UserMenu({ session }: { session: any }) {
                 </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                <DropdownMenuItem>{session?.user?.email}</DropdownMenuItem>
+                <DropdownMenuItem disabled>{session?.user?.email}</DropdownMenuItem>
                 <DropdownMenuItem className="text-red-500" onClick={() => signOut()}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
