@@ -1,6 +1,6 @@
 "use client";
 
-import { GalleryVerticalEnd } from "lucide-react"
+import { PenTool } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -10,6 +10,7 @@ import { loginCredentials, loginGitHub, loginGoogle } from "@/lib/actions/auth"
 import { useState } from "react"
 import { redirect } from "next/navigation"
 import { signIn } from "@/auth"
+import Link from "next/link";
 
 export function LoginForm({ className, ...props }: { className?: string }) {
     const [isSignup, setIsSignup] = useState(false);
@@ -41,7 +42,7 @@ export function LoginForm({ className, ...props }: { className?: string }) {
                     redirect: false,
                 });
 
-                redirect("/");
+                redirect("/home");
             } catch (err: any) {
                 setError(err.message);
             }
@@ -52,7 +53,7 @@ export function LoginForm({ className, ...props }: { className?: string }) {
                 password
             ).catch((err) => setError(err.message));
             if (!error) {
-                redirect("/");
+                redirect("/home");
             }
         }
     };
@@ -62,14 +63,14 @@ export function LoginForm({ className, ...props }: { className?: string }) {
             <form onSubmit={handleSubmit}>
                 <div className="flex flex-col gap-6">
                     <div className="flex flex-col items-center gap-2">
-                        <a href="#" className="flex flex-col items-center gap-2 font-medium">
+                        <Link href="/" className="flex flex-col items-center gap-2 font-medium">
                             <div className="flex h-8 w-8 items-center justify-center rounded-md">
-                                <GalleryVerticalEnd className="size-6" />
+                                <PenTool className="size-6" />
                             </div>
-                            <span className="sr-only">Acme Inc.</span>
-                        </a>
+                            <span className="sr-only">Signator</span>
+                        </Link>
                         <h1 className="text-xl font-bold">
-                            {isSignup ? "Create an Account" : "Welcome to Acme Inc."}
+                            {isSignup ? "Create a Signator account" : "Login to the Signator"}
                         </h1>
                         <div className="text-center text-sm">
                             {isSignup ? "Already have an account?" : "Don't have an account?"}{" "}

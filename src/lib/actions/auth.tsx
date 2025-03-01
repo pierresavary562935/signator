@@ -7,7 +7,7 @@ import { signIn, signOut } from "next-auth/react";
  */
 export const loginGitHub = async () => {
     try {
-        await signIn("github", { callbackUrl: "/" });
+        await signIn("github", { callbackUrl: "/home" });
     } catch (error) {
         console.error("GitHub login failed:", error);
     }
@@ -18,7 +18,7 @@ export const loginGitHub = async () => {
  */
 export const loginGoogle = async () => {
     try {
-        await signIn("google", { callbackUrl: "/" });
+        await signIn("google", { callbackUrl: "/home" });
     } catch (error) {
         console.error("Google login failed:", error);
     }

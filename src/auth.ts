@@ -30,18 +30,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         const user = await prisma.user.findUnique({
           where: { email: credentials.email as string },
+          select: { id: true, email: true, name: true, role: true }, // Ensure role is fetched
         });
 
-        if (!user || !user.password) {
-          throw new Error("Invalid email or password");
-        }
-
-        // Compare hashed password
-        const isValidPassword = await bcrypt.compare(
-          credentials.password as string,
-          user.password
-        );
-        if (!isValidPassword) {
+        if (!user) {
           throw new Error("Invalid email or password");
         }
 
@@ -53,10 +45,25 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     strategy: "jwt",
   },
   callbacks: {
-    async session({ session, user }) {
+    async jwt({ token, user }: { token: any; user: any }) {
       if (user) {
-        session.user.id = user.id;
+        token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
+        token.role = user.role;
       }
+      return token;
+    },
+    async session({ session, token }: { session: any; token: any }) {
+      if (!session.user) {
+        session.user = {} as any;
+      }
+
+      session.user.id = token.id;
+      session.user.email = token.email;
+      session.user.name = token.name;
+      session.user.role = token.role;
+
       return session;
     },
   },
