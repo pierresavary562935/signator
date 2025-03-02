@@ -1,30 +1,24 @@
-import Sidebar from "@/app-components/Sidebar";
 import UserMenu from "@/app-components/UserMenu";
-import { auth } from "@/auth";
-import { Button } from "@/components/ui/button";
 import { redirect } from "next/navigation";
-import SigningRequestsList from "@/app-components/SigningRequestsList";
 import { requiredCurrentUser } from "@/lib/current-user";
 import { User } from "@prisma/client";
+import SigningRequestsCardList from "@/app-components/user/SIgningRequestCardList";
+import PageHeader from "@/app-components/PageHeader";
+import { FilePen, Files } from "lucide-react";
 
 export default async function HomePage() {
   const user = (await requiredCurrentUser()) as User;
   if (!user) return redirect("/auth/login");
 
   return (
-    <>
+    <div className="container mx-auto py-6 space-y-6">
 
-      {/* Top Bar */}
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-semibold">👋 Welcome {user?.name}</h2>
-        <UserMenu user={user} />
+      <div className="flex justify-center items-center space-x-2">
+        <h2 className="text-2xl font-semibold">Welcome, {user.name}</h2>
+        <span className="animate-bounce text-3xl">👋</span>
       </div>
 
-
-      {/* My Requests Section */}
-      <h3 className="mt-10 text-xl font-semibold">My requests</h3>
-      {/* Add request list here later */}
-      <SigningRequestsList />
-    </>
+      <SigningRequestsCardList />
+    </div>
   );
 }

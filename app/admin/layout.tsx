@@ -1,11 +1,25 @@
-import Sidebar from "@/app-components/Sidebar";
 import "../globals.css";
-import { Toaster } from "sonner";
+import { requiredCurrentUser } from "@/lib/current-user";
+import { redirect } from "next/navigation";
+import { User } from "@prisma/client";
+import UserMenu from "@/app-components/UserMenu";
+import AdminSidebar from "@/app-components/admin/AdminSidebar";
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <>
-      <main className="flex-1 flex flex-col p-6">{children}</main>
-    </>
-  );
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+	const user = await requiredCurrentUser() as User;
+
+	if (!user || user.role !== "ADMIN") {
+		return redirect("/");
+	}
+
+	return (
+		<>
+			<AdminSidebar user={user} />
+			{/* Main Content */}
+			<main className="flex-1 flex flex-col p-6">
+				{children}
+			</main >
+		</>
+	);
 }

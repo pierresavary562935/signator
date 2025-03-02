@@ -1,4 +1,3 @@
-import Sidebar from "@/app-components/Sidebar";
 import "./globals.css";
 import { Toaster } from "sonner";
 

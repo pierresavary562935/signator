@@ -14,17 +14,19 @@ datasource db {
 }
 
 model User {
-  id            String          @id @default(cuid())
-  name          String?
-  username      String?         @unique
-  email         String?         @unique
-  emailVerified DateTime?
-  password      String?
-  image         String?
-  role          UserRole        @default(USER)
-  accounts      Account[]
-  sessions      Session[]
-  Authenticator Authenticator[]
+  id              String           @id @default(cuid())
+  name            String?
+  username        String?          @unique
+  email           String?          @unique
+  emailVerified   DateTime?
+  password        String?
+  image           String?
+  role            UserRole         @default(USER)
+  accounts        Account[]
+  sessions        Session[]
+  Authenticator   Authenticator[]
+  signingRequests SigningRequest[]
+  documents       Document[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -37,7 +39,7 @@ enum UserRole {
 
 model Account {
   id                       String  @id @default(cuid())
-  userId                   String  @unique
+  userId                   String
   type                     String
   provider                 String
   providerAccountId        String
@@ -93,4 +95,30 @@ model Authenticator {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, credentialID])
+}
+
+model SigningRequest {
+  id         String    @id @default(cuid())
+  documentId String
+  document   Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  userId     String? // Nullable if assigned by email only
+  user       User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  email      String? // Used when no user is selected
+  status     String    @default("pending") // "pending", "signed"
+  createdAt  DateTime  @default(now())
+  signedAt   DateTime?
+}
+
+model Document {
+  id              String           @id @default(cuid())
+  title           String
+  filename        String
+  filePath        String // Path to the stored PDF file
+  ownerId         String
+  owner           User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  status          String           @default("draft") // "draft", "ready", "signed"
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  signingRequests SigningRequest[] // Relation to signing requests
+  summary         String?          @db.Text
 }
