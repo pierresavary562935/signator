@@ -34,7 +34,6 @@ const pdfParse = async (fileBuffer: Buffer): Promise<string> => {
 export async function POST(req: NextRequest) {
   try {
     const { documentId } = await req.json();
-    console.log("documentId", documentId);
 
     if (!documentId) {
       return NextResponse.json(
@@ -47,7 +46,6 @@ export async function POST(req: NextRequest) {
     const document = await prisma.document.findUnique({
       where: { id: documentId },
     });
-    console.log("document", document);
 
     if (!document) {
       return NextResponse.json(

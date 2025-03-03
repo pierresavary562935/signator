@@ -1,8 +1,6 @@
-import { auth } from "@/auth";
 import { requiredCurrentUser } from "@/lib/current-user";
 import { prisma } from "@/prisma";
 import { User } from "@prisma/client";
-import { NextApiRequest, NextApiResponse } from "next";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -13,8 +11,6 @@ export async function GET(
   if (!user) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
   }
-  console.log("req", req);
-  console.log("params", params);
 
   const { id } = params;
 

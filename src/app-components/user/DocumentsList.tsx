@@ -1,34 +1,30 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { fetchUserSigningRequests } from "@/lib/actions/user/signing-requests-actions";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Download, Eye, FileSignature, Search } from "lucide-react";
+import { Download, Eye, FileSignature, RefreshCcw, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { SigningRequest } from "@prisma/client";
-import { Document as PrismaDocument } from "@prisma/client";
 import { formatDate } from "@/lib/date-utils";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { getStatusBadge } from "@/lib/badge-utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { DialogTrigger } from "@/components/ui/dialog";
-
-interface SigningRequestWithDocuments extends SigningRequest {
-    document: PrismaDocument;
-    user: { email: string };
-}
+import { SigningRequestWithDocument } from "@/lib/interfaces";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function DocumentsList() {
-    const [signingRequests, setSigningRequests] = useState<SigningRequestWithDocuments[]>([]);
+    const router = useRouter();
+    const [signingRequests, setSigningRequests] = useState<SigningRequestWithDocument[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         fetchUserSigningRequests()
             .then((requests) => {
-                setSigningRequests(requests as SigningRequestWithDocuments[]);
+                setSigningRequests(requests as SigningRequestWithDocument[]);
                 setIsLoading(false);
             });
     }, []);
@@ -43,10 +39,10 @@ export default function DocumentsList() {
     );
 
     const navigateToSigningRequest = (requestId: string) => {
-        redirect(`/signing-request/${requestId}?from=documents`);
+        router.push(`/signing-request/${requestId}?from=documents`);
     };
 
-    const renderDocumentTable = (signingRequests: SigningRequestWithDocuments[]) => (
+    const renderDocumentTable = (signingRequests: SigningRequestWithDocument[]) => (
         <Table>
             <TableHeader>
                 <TableRow>
@@ -57,7 +53,14 @@ export default function DocumentsList() {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {signingRequests.length === 0 ? (
+                {isLoading && (
+                    <TableRow>
+                        <TableCell colSpan={5}>
+                            <RefreshCcw className="animate-spin h-6 w-6 mx-auto" />
+                        </TableCell>
+                    </TableRow>
+                )}
+                {!isLoading && signingRequests.length === 0 ? (
                     <TableRow>
                         <TableCell colSpan={5} className="text-center py-6 text-gray-500">
                             No documents found

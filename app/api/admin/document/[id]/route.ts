@@ -13,7 +13,6 @@ export async function DELETE(
   if (!user || user.role !== "ADMIN") {
     return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
   }
-  console.log(params.id);
   const documentId = params.id;
 
   if (!documentId) {

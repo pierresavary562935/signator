@@ -37,7 +37,6 @@ export async function POST(
 ) {
   try {
     const documentId = params.id;
-    console.log("Regenerating summary for documentId:", documentId);
 
     // Parse request body to get AI options
     const options = await req.json();

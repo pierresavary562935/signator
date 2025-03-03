@@ -21,6 +21,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import PageHeader from "../PageHeader";
+import GenerateNewDocumentDialog from "./GenerateNewDocumentDialog";
 
 export default function DocumentsPanel() {
     const [documents, setDocuments] = useState<Document[]>([]);
@@ -101,6 +102,7 @@ export default function DocumentsPanel() {
         <>
             <PageHeader title="Documents">
                 <NewDocumentDialog onUpload={fetchDocuments} />
+                <GenerateNewDocumentDialog onUpload={fetchDocuments} />
             </PageHeader>
 
             {loading ? (
@@ -159,12 +161,14 @@ export default function DocumentsPanel() {
 
                                                     <TabsContent value="summary">
                                                         {summaryLoading ? (
-                                                            <div className="space-y-3">
-                                                                <Skeleton className="h-4 w-full" />
-                                                                <Skeleton className="h-4 w-[90%]" />
-                                                                <Skeleton className="h-4 w-[95%]" />
-                                                                <Skeleton className="h-4 w-[85%]" />
-                                                            </div>
+                                                            <Card className="p-2">
+                                                                <CardContent className="text-sm max-h-96 overflow-y-auto p-4 bg-gray-100 rounded-md">
+                                                                    <Skeleton className="h-4 w-full" />
+                                                                    <Skeleton className="h-4 w-[90%]" />
+                                                                    <Skeleton className="h-4 w-[95%]" />
+                                                                    <Skeleton className="h-4 w-[85%]" />
+                                                                </CardContent>
+                                                            </Card>
                                                         ) : (
                                                             <Card className="p-2">
                                                                 <CardContent className="text-sm max-h-96 overflow-y-auto p-4 bg-gray-100 rounded-md">

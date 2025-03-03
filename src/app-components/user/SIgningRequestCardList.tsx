@@ -1,11 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { formatDate } from "@/lib/date-utils";
 import { SigningRequest, Document } from "@prisma/client";
-
 import {
     Card,
     CardContent,
@@ -65,7 +64,7 @@ export default function SigningRequestsPage() {
     };
 
     const navigateToSigningRequest = (requestId: string) => {
-        redirect(`/signing-request/${requestId}?from=signing-requests`);
+        router.push(`/signing-request/${requestId}?from=signing-requests`);
     };
 
     // Loading skeleton for cards

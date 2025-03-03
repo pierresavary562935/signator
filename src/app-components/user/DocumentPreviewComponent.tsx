@@ -1,28 +1,20 @@
 "use client";
 
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-
 import { ArrowLeft, Bot, CheckCircle, FileText, RefreshCcw } from "lucide-react";
-import { SigningRequest } from "@prisma/client";
-import { Document } from "@prisma/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { redirect, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { formatDate } from "@/lib/date-utils";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import axios from "axios";
 import { toast } from "sonner";
-
-
-// Extended types
-type SigningRequestWithDocument = SigningRequest & {
-    document: Document;
-};
+import { SigningRequestWithDocument } from "@/lib/interfaces";
 
 interface DocumentPreviewComponentProps {
     selectedRequest: SigningRequestWithDocument | undefined;
@@ -32,6 +24,7 @@ interface DocumentPreviewComponentProps {
 }
 
 export default function DocumentPreviewComponent({ selectedRequest, onSignSuccess, documentId, requestId }: DocumentPreviewComponentProps) {
+    const router = useRouter();
     const searchParams = useSearchParams()
 
     const [agreed, setAgreed] = useState<boolean>(false);
@@ -43,7 +36,6 @@ export default function DocumentPreviewComponent({ selectedRequest, onSignSucces
     const [from, setFrom] = useState("documents");
 
     const handleFrameLoaded = () => {
-        console.log("Frame loaded");
         const iframe = document.querySelector("iframe");
         if (iframe && iframe.contentDocument && iframe.contentDocument.readyState === "complete") {
             setDocumentLoaded(true);
@@ -99,7 +91,7 @@ export default function DocumentPreviewComponent({ selectedRequest, onSignSucces
                     <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => from === "documents" ? redirect("/documents") : redirect("/home")}
+                        onClick={() => from === "documents" ? router.push("/documents") : router.push("/home")}
                         className="mr-2"
                     >
                         <ArrowLeft className="h-5 w-5" />
@@ -248,7 +240,7 @@ export default function DocumentPreviewComponent({ selectedRequest, onSignSucces
                                         </p>
                                     </div>
                                 </div>
-                                <Button onClick={() => redirect("/home")}>
+                                <Button onClick={() => router.push("/home")}>
                                     Back to {from === "documents" ? "Documents" : "Home"}
                                 </Button>
                             </div>
