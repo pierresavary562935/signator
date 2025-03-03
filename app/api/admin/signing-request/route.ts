@@ -8,9 +8,8 @@ export async function POST(
   req: Request,
   params: { documentId: string; userId: string; email: string }
 ) {
-  const session = await auth();
-  // if (!session || !session.user || session.user.role !== 'admin') {
-  if (!session || !session.user) {
+  const user = (await requiredCurrentUser()) as User;
+  if (!user || user.role !== "ADMIN") {
     return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
   }
 
@@ -35,6 +34,19 @@ export async function POST(
         status: "PENDING",
       })),
     });
+
+    if (email) {
+      // create user with email
+      const user = await prisma.user.create({
+        data: {
+          email,
+          role: "USER",
+        },
+      });
+
+      // send email to user
+      // sendEmail(email, "You have a new document to sign");
+    }
 
     return NextResponse.json(
       { message: "Signing requests created", signingRequests },

@@ -53,6 +53,25 @@ export async function PATCH(
     );
   }
   try {
+    // check if not already signed
+    const request = await prisma.signingRequest.findUnique({
+      where: { id: String(params.id) },
+    });
+
+    if (!request) {
+      return NextResponse.json(
+        { message: "Request not found" },
+        { status: 404 }
+      );
+    }
+
+    if (request.status === "SIGNED") {
+      return NextResponse.json(
+        { message: "Request already signed" },
+        { status: 400 }
+      );
+    }
+
     const updatedRequest = await prisma.signingRequest.update({
       where: { id: String(params.id) },
       data: { status: "SIGNED", signedAt: new Date() },

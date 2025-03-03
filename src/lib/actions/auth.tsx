@@ -1,5 +1,4 @@
-"use client"; // Ensures it runs in client components
-
+"use client";
 import { signIn, signOut } from "next-auth/react";
 
 /**
@@ -49,7 +48,7 @@ export const loginCredentials = async (email: string, password: string) => {
  */
 export const logout = async () => {
     try {
-        await signOut({ callbackUrl: "/" });
+        await signOut({ redirect: false });
     } catch (error) {
         console.error("Logout failed:", error);
     }

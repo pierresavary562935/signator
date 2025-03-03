@@ -26,9 +26,21 @@ export async function GET(
     );
   }
 
-  // Check if the user is the owner or has admin access
-  if (document.ownerId !== user.id) {
-    return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+  if (user.role !== "ADMIN") {
+    // check if the user has access to the document
+    const signingRequest = await prisma.signingRequest.findFirst({
+      where: {
+        documentId: document.id,
+        userId: user.id,
+      },
+    });
+
+    if (!signingRequest) {
+      return NextResponse.json(
+        { message: "You don't have access to this document" },
+        { status: 403 }
+      );
+    }
   }
 
   const filePath = path.join(

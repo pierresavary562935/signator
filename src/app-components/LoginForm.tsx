@@ -8,11 +8,13 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { loginCredentials, loginGitHub, loginGoogle } from "@/lib/actions/auth"
 import { useState } from "react"
-import { redirect } from "next/navigation"
-import { signIn } from "@/auth"
+import { useRouter } from "next/navigation"
 import Link from "next/link";
+import axios from "axios";
 
 export function LoginForm({ className, ...props }: { className?: string }) {
+    const router = useRouter();
+
     const [isSignup, setIsSignup] = useState(false);
     const [name, setName] = useState(""); // Only for signup
     const [email, setEmail] = useState("");
@@ -26,34 +28,25 @@ export function LoginForm({ className, ...props }: { className?: string }) {
         if (isSignup) {
             // Signup logic
             try {
-                const res = await fetch("/api/auth/signup", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name, email, password }),
-                });
+                const response = await axios.post("/api/auth/signup", { name, email, password });
 
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.message || "Signup failed");
-
-                // Auto-login after signup
-                await signIn("credentials", {
-                    email,
-                    password,
-                    redirect: false,
-                });
-
-                redirect("/home");
+                if (response.status === 201) {
+                    // Auto-login after signup
+                    await loginCredentials(email, password);
+                    router.push("/home"); // Redirect user to home
+                } else {
+                    setError(response.data.error || "Signup failed");
+                }
             } catch (err: any) {
-                setError(err.message);
+                setError(err.response?.data?.error || "Something went wrong. Please try again.");
             }
         } else {
             // Login logic
-            await loginCredentials(
-                email,
-                password
-            ).catch((err) => setError(err.message));
-            if (!error) {
-                redirect("/home");
+            try {
+                await loginCredentials(email, password);
+                router.push("/home");
+            } catch (err: any) {
+                setError(err.response?.data?.error || "Invalid email or password.");
             }
         }
     };

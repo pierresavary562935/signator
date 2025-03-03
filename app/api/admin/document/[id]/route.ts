@@ -28,7 +28,7 @@ export async function DELETE(
     return NextResponse.json({ error: "Document not found" }, { status: 404 });
   }
 
-  if (document.ownerId !== user.id) {
+  if (document.ownerId !== user.id && user.role !== "ADMIN") {
     return NextResponse.json(
       { message: "Unauthorized, you are not the owner" },
       { status: 403 }

@@ -50,7 +50,7 @@ export function SigningRequestsList() {
     const fetchSigningRequests = async () => {
         setLoading(true);
         try {
-            const response = await axios.get('/api/admin/signing-request?include=document');
+            const response = await axios.get('/api/admin/signing-request');
             if (response.status !== 200) {
                 toast.error('Failed to fetch signing requests');
                 return;

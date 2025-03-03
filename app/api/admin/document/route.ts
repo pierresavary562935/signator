@@ -36,21 +36,21 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // 🔒 Secure private storage directory
+  // secure private storage directory
   const uploadDir = path.join(process.cwd(), "private/documents");
   if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
   }
 
-  // 🛡️ Generate a secure filename
+  // generate a secure filename
   const fileExtension = file.name.split(".").pop();
   const secureFilename = `${randomUUID()}.${fileExtension}`;
   const filePath = path.join(uploadDir, secureFilename);
 
-  // Save file securely
+  // save file
   const buffer = Buffer.from(await file.arrayBuffer());
   fs.writeFileSync(filePath, buffer);
-  // Store document metadata in the database
+
   const document = await prisma.document.create({
     data: {
       title,
