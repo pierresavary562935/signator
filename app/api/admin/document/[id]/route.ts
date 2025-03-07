@@ -13,14 +13,14 @@ export async function DELETE(
   if (!user || user.role !== "ADMIN") {
     return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
   }
-  const documentId = params.id;
+  const { id } = await params;
 
-  if (!documentId) {
+  if (!id) {
     return NextResponse.json({ error: "Missing document ID" }, { status: 400 });
   }
 
   const document = await prisma.document.findUnique({
-    where: { id: documentId },
+    where: { id: id },
   });
 
   if (!document) {

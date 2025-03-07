@@ -14,9 +14,11 @@ export async function GET(
     return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
   }
 
+  const { id } = await params;
+
   // Fetch document from the database
   const document = await prisma.document.findUnique({
-    where: { id: params.id },
+    where: { id: id },
   });
 
   if (!document) {

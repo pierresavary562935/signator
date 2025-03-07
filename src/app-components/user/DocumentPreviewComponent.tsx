@@ -86,7 +86,7 @@ export default function DocumentPreviewComponent({ selectedRequest, onSignSucces
     return (
         <>
             {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between my-4">
                 <div className="flex items-center">
                     <Button
                         variant="ghost"
@@ -175,8 +175,8 @@ export default function DocumentPreviewComponent({ selectedRequest, onSignSucces
 
                 {/* AI Summary Tab */}
                 <TabsContent value="summary">
-                    <Card>
-                        <CardContent>
+                    <Card className="h-full">
+                        <CardContent className="h-full">
                             <div className="mb-3 flex items-center">
                                 <h3 className="text-lg font-semibold">AI-Generated Summary</h3>
                                 {loadingSummary && (
@@ -240,7 +240,7 @@ export default function DocumentPreviewComponent({ selectedRequest, onSignSucces
                                         </p>
                                     </div>
                                 </div>
-                                <Button onClick={() => router.push("/home")}>
+                                <Button onClick={() => from === "documents" ? router.push("/documents") : router.push("/home")}>
                                     Back to {from === "documents" ? "Documents" : "Home"}
                                 </Button>
                             </div>

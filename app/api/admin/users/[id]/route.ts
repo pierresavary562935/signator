@@ -13,6 +13,8 @@ export async function PATCH(
     return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
   }
 
+  const { id } = await params;
+
   try {
     const { role } = await req.json();
     if (!["USER", "ADMIN"].includes(role)) {
@@ -20,7 +22,7 @@ export async function PATCH(
     }
 
     const updatedUser = await prisma.user.update({
-      where: { id: params.id },
+      where: { id: id },
       data: { role },
     });
 

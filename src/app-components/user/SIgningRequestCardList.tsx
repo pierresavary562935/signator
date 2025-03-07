@@ -67,42 +67,21 @@ export default function SigningRequestsPage() {
         router.push(`/signing-request/${requestId}?from=signing-requests`);
     };
 
-    // Loading skeleton for cards
-    const renderSkeletons = () => {
-        return Array(3).fill(0).map((_, i) => (
-            <Card key={i} className="p-4">
-                <CardHeader>
-                    <Skeleton className="h-6 w-3/4 mb-2" />
-                    <Skeleton className="h-4 w-1/2" />
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between">
-                        <Skeleton className="h-4 w-1/4" />
-                        <Skeleton className="h-5 w-16 rounded-full" />
-                    </div>
-                    <div className="flex items-center justify-between">
-                        <Skeleton className="h-4 w-1/4" />
-                        <Skeleton className="h-4 w-1/3" />
-                    </div>
-                </CardContent>
-                <CardFooter className="flex justify-between">
-                    <Skeleton className="h-9 w-24 rounded-md" />
-                    <Skeleton className="h-9 w-20 rounded-md" />
-                </CardFooter>
-            </Card>
-        ));
-    };
-
     const renderRequestCards = (requestsList: SigningRequestWithDocument[]) => {
         if (loading) {
-            return renderSkeletons();
+            return (
+                <div className="col-span-full text-center py-12">
+                    <RefreshCcw className="h-12 w-12 mx-auto text-muted-foreground mb-2 animate-spin" />
+                    <h3 className="text-lg font-medium">Loading...</h3>
+                </div>
+            );
         }
 
         if (requestsList.length === 0) {
             return (
                 <div className="col-span-full text-center py-12">
                     <FileSignature className="h-12 w-12 mx-auto text-muted-foreground mb-2" />
-                    <h3 className="text-lg font-medium">No documents found</h3>
+                    <h3 className="text-lg font-medium">Nothing to sign here...</h3>
                     <p className="text-muted-foreground">
                         {requestsList === requests
                             ? "You don't have any pending documents to sign"
@@ -170,7 +149,7 @@ export default function SigningRequestsPage() {
             </PageHeader>
 
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
                 {renderRequestCards(requests)}
             </div>
 

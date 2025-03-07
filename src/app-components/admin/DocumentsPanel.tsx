@@ -162,7 +162,7 @@ export default function DocumentsPanel() {
                                                     <TabsContent value="summary">
                                                         {summaryLoading ? (
                                                             <Card className="p-2">
-                                                                <CardContent className="text-sm max-h-96 overflow-y-auto p-4 bg-gray-100 rounded-md">
+                                                                <CardContent className="overflow-y-auto p-4 bg-gray-100 rounded-md flex flex-col gap-2">
                                                                     <Skeleton className="h-4 w-full" />
                                                                     <Skeleton className="h-4 w-[90%]" />
                                                                     <Skeleton className="h-4 w-[95%]" />

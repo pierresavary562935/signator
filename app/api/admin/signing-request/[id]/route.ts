@@ -11,9 +11,9 @@ export async function DELETE(
   if (!user || user.role !== "ADMIN") {
     return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
   }
-  const signingRequestId = params.id;
+  const { id } = await params;
 
-  if (!signingRequestId) {
+  if (!id) {
     return NextResponse.json(
       { error: "Missing signing request ID" },
       { status: 400 }
@@ -21,7 +21,7 @@ export async function DELETE(
   }
 
   const signingRequest = await prisma.signingRequest.delete({
-    where: { id: signingRequestId },
+    where: { id: id },
   });
 
   return NextResponse.json({ message: "Signing request deleted" });
@@ -36,7 +36,9 @@ export async function PATCH(
     return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
   }
 
-  if (!params.id) {
+  const { id } = await params;
+
+  if (!id) {
     return NextResponse.json(
       { message: "Invalid request ID" },
       { status: 400 }
@@ -44,7 +46,7 @@ export async function PATCH(
   }
   try {
     const updatedRequest = await prisma.signingRequest.update({
-      where: { id: String(params.id) },
+      where: { id: String(id) },
       data: { status: "SIGNED", signedAt: new Date() },
     });
 

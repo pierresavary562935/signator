@@ -36,7 +36,7 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    const documentId = params.id;
+    const { id: documentId } = await params;
 
     // Parse request body to get AI options
     const options = await req.json();

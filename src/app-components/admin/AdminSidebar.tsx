@@ -22,24 +22,28 @@ export default function AdminSidebar({ user }: { user: User }) {
     };
 
     return (
-        <aside className="h-screen w-64 bg-blue-100 border-r flex flex-col">
+        <aside className="h-screen w-64 border-r flex flex-col">
             <div className="p-4 flex items-center space-x-2">
                 <Star className="w-6 h-6 text-blue-500" />
                 <h1 className="text-lg font-bold">Signator</h1>
             </div>
 
+            <Separator />
+            <Button
+                variant={pathname === "/home" ? "secondary" : "ghost"}
+                className="justify-center w-full"
+                asChild
+            >
+                <Link href="/home">
+                    <Home className="mr-2 h-4 w-4" />
+                    User Home
+                </Link>
+            </Button>
+            <Separator />
+
             <ScrollArea className="flex-1 px-3 py-2">
                 <nav className="flex flex-col space-y-1">
-                    <Button
-                        variant={pathname === "/home" ? "secondary" : "ghost"}
-                        className="justify-start w-full"
-                        asChild
-                    >
-                        <Link href="/home">
-                            <Home className="mr-2 h-4 w-4" />
-                            User Home
-                        </Link>
-                    </Button>
+
 
                     <Separator className="my-2 bg-white" />
 
@@ -50,7 +54,7 @@ export default function AdminSidebar({ user }: { user: User }) {
                     >
                         <Link href="/admin">
                             <Layout className="mr-2 h-4 w-4" />
-                            Dashboard
+                            Requests
                         </Link>
                     </Button>
 
@@ -88,7 +92,7 @@ export default function AdminSidebar({ user }: { user: User }) {
                     </Avatar>
                     <div className="flex flex-col space-y-1">
                         <p className="text-sm font-medium">{user.name || "Admin"}</p>
-                        <p className="text-xs text-muted-foreground truncate max-w-32">{user.email}</p>
+                        <p className="text-xs text-muted-foreground truncate max-w-45">{user.email}</p>
                     </div>
                 </div>
                 <Button onClick={() => signOut()} variant="ghost" size="sm" className="mt-3 w-full justify-start text-red-500 hover:text-red-600 hover:bg-red-100">

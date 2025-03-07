@@ -12,7 +12,7 @@ export async function GET(
     return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
   }
 
-  const { id } = params;
+  const { id } = await params;
 
   if (!id) {
     return NextResponse.json(
@@ -42,7 +42,9 @@ export async function PATCH(
     return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
   }
 
-  if (!params.id) {
+  const { id } = await params;
+
+  if (!id) {
     return NextResponse.json(
       { message: "Invalid request ID" },
       { status: 400 }
@@ -51,7 +53,7 @@ export async function PATCH(
   try {
     // check if not already signed
     const request = await prisma.signingRequest.findUnique({
-      where: { id: String(params.id) },
+      where: { id: String(id) },
     });
 
     if (!request) {
@@ -69,7 +71,7 @@ export async function PATCH(
     }
 
     const updatedRequest = await prisma.signingRequest.update({
-      where: { id: String(params.id) },
+      where: { id: String(id) },
       data: { status: "SIGNED", signedAt: new Date() },
     });
 

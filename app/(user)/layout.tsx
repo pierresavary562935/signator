@@ -1,4 +1,4 @@
-import Sidebar from "@/app-components/user/Sidebar";
+import TopNavbar from "@/app-components/user/TopNavbar";
 import { requiredCurrentUser } from "@/lib/current-user";
 import { User } from "@prisma/client";
 import { redirect } from "next/navigation";
@@ -13,10 +13,12 @@ export default async function UserLayout({ children }: { children: React.ReactNo
 
   return (
     <>
-      <Sidebar user={user} />
 
-      <main className="flex-1 flex flex-col p-6">
-        {children}
+      <main className="flex-1 flex flex-col">
+        <TopNavbar user={user} />
+        <div className="w-1/2 h-2/3 mx-auto">
+          {children}
+        </div>
       </main>
 
       <Toaster />
