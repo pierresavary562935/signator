@@ -13,14 +13,13 @@ const pdfParse = async (fileBuffer: Buffer): Promise<string> => {
     const pdfParser = new PDFParser();
 
     pdfParser.on("pdfParser_dataError", (errData) => {
-      console.error("PDF parsing error:", errData);
       reject(errData);
     });
 
     pdfParser.on("pdfParser_dataReady", (pdfData) => {
       // Extract text from all pages
-      const extractedText = pdfData.Pages.map((page: any) =>
-        page.Texts.map((textObj: any) => decodeURIComponent(textObj.R[0].T)) // Decode URI encoded text
+      const extractedText = pdfData.Pages.map((page) =>
+        page.Texts.map((textObj) => decodeURIComponent(textObj.R[0].T)) // Decode URI encoded text
           .join(" ")
       ).join("\n\n"); // Join pages with spacing
 
@@ -66,14 +65,12 @@ export async function POST(req: NextRequest) {
     ); // Secure path
 
     if (!fs.existsSync(filePath)) {
-      console.error(`File not found at: ${filePath}`);
       return NextResponse.json({ error: "File not found" }, { status: 404 });
     }
 
     // Extract text from PDF
     const fileBuffer = fs.readFileSync(filePath);
     const extractedText = await pdfParse(fileBuffer);
-    console.log("Extracted Text:", extractedText);
 
     if (!extractedText) {
       return NextResponse.json(

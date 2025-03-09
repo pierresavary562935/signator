@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
         userId: user.id,
       },
     });
-    console.log("signingRequest", signingRequest);
+
     if (!signingRequest) {
       return NextResponse.json(
         { error: "You don't have access to this document" },

@@ -46,8 +46,6 @@ const PreparePDF = () => {
                     throw new Error("Failed to fetch document metadata");
                 }
 
-                console.log("Metadata response:", metadataResponse);
-
                 const metadata = metadataResponse.data;
                 if (metadata.totalPage) {
                     setTotalPages(metadata.totalPage);
@@ -189,7 +187,6 @@ const PreparePDF = () => {
             }
 
             const result = await response.json();
-            console.log("Save result:", result);
             toast.success(`Positions saved successfully! (${result.count} fields)`);
         } catch (error) {
             console.error("Error saving positions:", error);
@@ -205,7 +202,6 @@ const PreparePDF = () => {
                 throw new Error("Failed to set document ready");
             }
 
-            console.log("Document ready response:", response);
             toast.success("Document is now ready for signing!");
         } catch (error) {
             console.error("Error setting document ready:", error);

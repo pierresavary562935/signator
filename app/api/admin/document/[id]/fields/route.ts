@@ -9,6 +9,7 @@ interface PositionsData {
   };
 }
 
+// POST /admin/document/:id/fields (saves field positions for a document)
 export async function POST(
   req: NextRequest,
   { params }: { params: { id: string } }
@@ -27,8 +28,6 @@ export async function POST(
     pdfHeight,
   }: { positions: PositionsData; pdfWidth: number; pdfHeight: number } =
     await req.json();
-  console.log("Received positions:", positions);
-  console.log("Document ID:", id);
 
   // Ensure the document exists
   const document = await prisma.document.findUnique({
@@ -69,8 +68,6 @@ export async function POST(
       y: position.y,
     }));
   });
-
-  console.log("Creating entries:", entries);
 
   if (entries.length > 0) {
     await prisma.documentFieldPosition.createMany({ data: entries });

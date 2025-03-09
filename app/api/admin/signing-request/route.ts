@@ -40,7 +40,7 @@ export async function POST(req: Request) {
         },
       });
       console.log("User created:", user);
-      // send email to user
+      // TODO: send email to user
       // sendEmail(email, "You have a new document to sign");
     }
 
