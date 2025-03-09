@@ -4,6 +4,7 @@ import { requiredCurrentUser } from "@/lib/current-user";
 import fs from "fs";
 import path from "path";
 
+// GET /document/:id (returns a document)
 export async function GET(
   req: NextRequest,
   { params }: { params: { id: string } }

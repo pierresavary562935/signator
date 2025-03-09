@@ -17,6 +17,7 @@ export async function POST(req: NextRequest) {
     // Fetch the original document from the database
     const originalDocument = await prisma.document.findUnique({
       where: { id: docId },
+      include: { fieldPositions: true },
     });
     if (!originalDocument) {
       return NextResponse.json(
@@ -52,28 +53,64 @@ export async function POST(req: NextRequest) {
     // Load existing PDF
     const existingPdfBytes = fs.readFileSync(filePath);
     const pdfDoc = await PDFDocument.load(existingPdfBytes);
-    const pages = pdfDoc.getPages();
-    const firstPage = pages[0];
 
-    // Add signature details
-    firstPage.drawText(`Signed by: ${userName}`, {
-      x: 50,
-      y: 100,
-      size: 12,
-      color: rgb(0, 0, 0),
-    });
-    firstPage.drawText(`Signed at: ${new Date().toLocaleString()}`, {
-      x: 50,
-      y: 80,
-      size: 12,
-      color: rgb(0, 0, 0),
-    });
-    firstPage.drawText(`Signature: ${signature}`, {
-      x: 50,
-      y: 60,
-      size: 14,
-      color: rgb(0, 0, 1),
-    });
+    // Get original PDF page dimensions
+    const firstPage = pdfDoc.getPages()[0]; // Assume first page for size reference
+    const { width: originalPdfWidth, height: originalPdfHeight } =
+      firstPage.getSize();
+    const { pdfWidth, pdfHeight } = originalDocument.fieldPositions.reduce(
+      (acc, field) => {
+        acc.pdfWidth = Math.max(acc.pdfWidth, field.x);
+        acc.pdfHeight = Math.max(acc.pdfHeight, field.y);
+        return acc;
+      },
+      { pdfWidth: 0, pdfHeight: 0 }
+    );
+
+    console.log("Original PDF size:", originalPdfWidth, originalPdfHeight);
+    console.log("Rendered PDF size:", pdfWidth, pdfHeight);
+
+    // Calculate scale factor between original PDF and displayed PDF
+    const scaleX = originalPdfWidth / pdfWidth;
+    const scaleY = originalPdfHeight / pdfHeight;
+
+    console.log("Scale factors:", scaleX, scaleY);
+
+    // Group positions by page
+    const positionsByPage = originalDocument.fieldPositions.reduce(
+      (acc, field) => {
+        acc[field.pageNumber] = acc[field.pageNumber] || [];
+        acc[field.pageNumber].push(field);
+        return acc;
+      },
+      {} as Record<number, typeof originalDocument.fieldPositions>
+    );
+
+    for (const [pageNumber, fields] of Object.entries(positionsByPage)) {
+      const pageIndex = Number(pageNumber) - 1;
+      const page = pdfDoc.getPages()[pageIndex];
+
+      if (page) {
+        for (const field of fields) {
+          let text = "";
+          if (field.fieldName === "name") text = `Signed by: ${userName}`;
+          if (field.fieldName === "signedAt")
+            text = `Signed at: ${new Date().toLocaleString()}`;
+          if (field.fieldName === "signature") text = `Signature: ${signature}`;
+
+          // Scale and flip Y-coordinates
+          const adjustedX = field.x * scaleX;
+          const adjustedY = originalPdfHeight - field.y * scaleY;
+
+          page.drawText(text, {
+            x: adjustedX,
+            y: adjustedY,
+            size: 12,
+            color: rgb(0, 0, 0),
+          });
+        }
+      }
+    }
 
     // Save the signed PDF with a new filename
     const signedFileName = `${

@@ -3,6 +3,7 @@ import { prisma } from "@/prisma";
 import { User } from "@prisma/client";
 import { NextResponse } from "next/server";
 
+// GET /signing-request/:id (returns a signing request)
 export async function GET(
   req: Request,
   { params }: { params: { id: string } }
@@ -33,6 +34,8 @@ export async function GET(
   return NextResponse.json(request);
 }
 
+// PATCH /signing-request/:id (updates a signing request status to SIGNED)
+// body: { signedDocumentId: string }
 export async function PATCH(
   req: Request,
   { params }: { params: { id: string } }

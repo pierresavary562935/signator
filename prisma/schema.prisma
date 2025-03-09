@@ -109,16 +109,31 @@ model SigningRequest {
   signedAt   DateTime?
 }
 
+model DocumentFieldPosition {
+  id         String   @id @default(cuid())
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  documentId String
+  pageNumber Int
+  fieldName  String
+  pdfWidth   Float?
+  pdfHeight  Float?
+  x          Float
+  y          Float
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
 model Document {
-  id              String           @id @default(cuid())
+  id              String                  @id @default(cuid())
   title           String
   filename        String
-  filePath        String // Path to the stored PDF file
+  filePath        String
   ownerId         String
-  owner           User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  status          String           @default("draft") // "draft", "ready", "signed"
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+  owner           User                    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  status          String                  @default("draft") // "draft", "ready", "signed"
+  createdAt       DateTime                @default(now())
+  updatedAt       DateTime                @updatedAt
   signingRequests SigningRequest[] // Relation to signing requests
-  summary         String?          @db.Text
+  summary         String?                 @db.Text
+  fieldPositions  DocumentFieldPosition[] // Link to field positions
 }

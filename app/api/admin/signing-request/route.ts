@@ -1,13 +1,9 @@
-import { auth } from "@/auth";
 import { requiredCurrentUser } from "@/lib/current-user";
 import { prisma } from "@/prisma";
 import { User } from "@prisma/client";
 import { NextResponse } from "next/server";
 
-export async function POST(
-  req: Request,
-  params: { documentId: string; userId: string; email: string }
-) {
+export async function POST(req: Request) {
   const user = (await requiredCurrentUser()) as User;
   if (!user || user.role !== "ADMIN") {
     return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
@@ -37,13 +33,13 @@ export async function POST(
 
     if (email) {
       // create user with email
-      const user = await prisma.user.create({
+      const user: User = await prisma.user.create({
         data: {
           email,
           role: "USER",
         },
       });
-
+      console.log("User created:", user);
       // send email to user
       // sendEmail(email, "You have a new document to sign");
     }

@@ -30,8 +30,6 @@ export default function DocumentPreviewComponent({ selectedRequest, onSignSucces
 
     const [agreed, setAgreed] = useState<boolean>(false);
     const [signing, setSigning] = useState(false);
-    const [summary, setSummary] = useState<string | null>(null);
-    const [loadingSummary, setLoadingSummary] = useState(true);
     const [openAgreement, setOpenAgreement] = useState(false);
     const [documentLoaded, setDocumentLoaded] = useState(false);
     const [from, setFrom] = useState("documents");
@@ -52,24 +50,8 @@ export default function DocumentPreviewComponent({ selectedRequest, onSignSucces
         if (from) {
             setFrom(from)
         }
-
-        if (documentId) {
-            fetchSummary();
-        }
     }, [documentId]);
 
-    const fetchSummary = async () => {
-        setLoadingSummary(true);
-        try {
-            const { data } = await axios.post("/api/document/summary", { documentId });
-            setSummary(data.summary);
-        } catch (error) {
-            console.error("Error fetching summary:", error);
-            toast.error("Failed to generate document summary.");
-        } finally {
-            setLoadingSummary(false);
-        }
-    };
 
     const handleSignDocument = async () => {
         if (!name || !signature) {
@@ -202,33 +184,21 @@ export default function DocumentPreviewComponent({ selectedRequest, onSignSucces
                 <TabsContent value="summary">
                     <Card className="h-full">
                         <CardContent className="h-full">
-                            <div className="mb-3 flex items-center">
-                                <h3 className="text-lg font-semibold">AI-Generated Summary</h3>
-                                {loadingSummary && (
-                                    <RefreshCcw className="ml-2 h-4 w-4 animate-spin text-muted-foreground" />
-                                )}
-                            </div>
-
                             <ScrollArea className="h-[50vh] w-full rounded-md border p-4 bg-muted/50">
-                                {loadingSummary ? (
-                                    <p className="text-muted-foreground">Generating summary...</p>
-                                ) : (
-                                    <div className="prose max-w-none">
-                                        <ul className="list-disc list-inside">
-                                            {selectedRequest?.document.summary && selectedRequest.document.summary.split("\n").map((line, i) => {
-                                                // Convert **bold** markdown to <strong> HTML
-                                                const formattedLine = line.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+                                <div className="prose max-w-none">
+                                    <ul className="list-disc list-inside">
+                                        {selectedRequest?.document.summary && selectedRequest.document.summary.split("\n").map((line, i) => {
+                                            // Convert **bold** markdown to <strong> HTML
+                                            const formattedLine = line.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
 
-                                                return line.startsWith("-") ? (
-                                                    <li key={i} dangerouslySetInnerHTML={{ __html: formattedLine.substring(2) }} />
-                                                ) : (
-                                                    <p key={i} dangerouslySetInnerHTML={{ __html: formattedLine }} className="mb-2" />
-                                                );
-                                            })}
-                                        </ul>
-                                    </div>
-
-                                )}
+                                            return line.startsWith("-") ? (
+                                                <li key={i} dangerouslySetInnerHTML={{ __html: formattedLine.substring(2) }} />
+                                            ) : (
+                                                <p key={i} dangerouslySetInnerHTML={{ __html: formattedLine }} className="mb-2" />
+                                            );
+                                        })}
+                                    </ul>
+                                </div>
                             </ScrollArea>
                         </CardContent>
                     </Card>

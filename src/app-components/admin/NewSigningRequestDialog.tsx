@@ -9,7 +9,6 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
@@ -32,7 +31,7 @@ export default function NewSigningRequestDialog({ onCreate }: { onCreate?: () =>
         fetchUsers().then(setUsers);
         fetchDocuments().then(
             // filter by draft status
-            (docs) => setDocuments(docs.filter((doc: any) => doc.status === "DRAFT"))
+            (docs) => setDocuments(docs.filter((doc: Document) => doc.status === "READY"))
         );
     }, []);
 
@@ -60,6 +59,7 @@ export default function NewSigningRequestDialog({ onCreate }: { onCreate?: () =>
             setDocumentIds([]);
             setUserId("");
             setEmail("");
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             onCreate && onCreate();
         } catch (error) {
             console.error("Error creating signing request:", error);

@@ -64,6 +64,7 @@ export default function DocumentsPanel() {
 
 
     const draftDocuments = documents.filter(doc => doc.status === "DRAFT");
+    const readyDocuments = documents.filter(doc => doc.status === "READY");
     const signedDocuments = documents.filter(doc => doc.status === "SIGNED");
     // Filter by search term
     const filteredDocuments = documents.filter(doc =>
@@ -342,7 +343,7 @@ export default function DocumentsPanel() {
                                 </TooltipProvider>
 
                                 {/* Prepare PDF Document */}
-                                {doc.status === "DRAFT" && (
+                                {doc.status !== "SIGNED" && (
 
                                     <TooltipProvider>
                                         <Tooltip>
@@ -442,7 +443,8 @@ export default function DocumentsPanel() {
                     <Tabs defaultValue="all" className="w-full">
                         <TabsList className="mb-4">
                             <TabsTrigger value="all">All ({filteredDocuments.length})</TabsTrigger>
-                            <TabsTrigger value="pending">Template ({draftDocuments.length})</TabsTrigger>
+                            <TabsTrigger value="pending">Draft ({draftDocuments.length})</TabsTrigger>
+                            <TabsTrigger value="ready">Ready ({readyDocuments.length})</TabsTrigger>
                             <TabsTrigger value="signed">Signed ({signedDocuments.length})</TabsTrigger>
                         </TabsList>
                         <TabsContent value="all">
@@ -450,6 +452,11 @@ export default function DocumentsPanel() {
                         </TabsContent>
                         <TabsContent value="pending">
                             {renderDocumentTable(draftDocuments.filter(doc =>
+                                doc.title.toLowerCase().includes(searchTerm.toLowerCase())
+                            ))}
+                        </TabsContent>
+                        <TabsContent value="ready">
+                            {renderDocumentTable(readyDocuments.filter(doc =>
                                 doc.title.toLowerCase().includes(searchTerm.toLowerCase())
                             ))}
                         </TabsContent>
