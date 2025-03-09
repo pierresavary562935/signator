@@ -40,7 +40,6 @@ const PreparePDF = () => {
         const fetchDocumentData = async () => {
             setDataLoading(true);
             try {
-                // Fetch document metadata including total pages
                 const metadataResponse: AxiosResponse = await axios.get(`/api/admin/document/${id}/metadata`);
                 if (!metadataResponse.data) {
                     throw new Error("Failed to fetch document metadata");
@@ -51,7 +50,6 @@ const PreparePDF = () => {
                     setTotalPages(metadata.totalPage);
                 }
 
-                // Fetch existing field positions
                 if (metadata.positions) {
                     const positionsData = await metadata.positions;
 

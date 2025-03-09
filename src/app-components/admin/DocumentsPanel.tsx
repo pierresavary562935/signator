@@ -37,7 +37,6 @@ export default function DocumentsPanel() {
         maxTokens: 300,
         customPrompt: false,
         promptText: "Summarize the following document:",
-        formatOutput: false,
         outputType: "summary",
         bulletPoints: false,
         highlightKeyPoints: false
@@ -142,7 +141,7 @@ export default function DocumentsPanel() {
                             <TableCell>{new Date(doc.createdAt).toLocaleDateString()}</TableCell>
                             <TableCell>{getStatusBadge(doc.status)}</TableCell>
                             <TableCell className="text-right">
-                                {doc.status === "DRAFT" && (
+                                {doc.status !== "SIGNED" && (
                                     <Dialog>
                                         <TooltipProvider>
                                             <Tooltip>
@@ -165,7 +164,7 @@ export default function DocumentsPanel() {
                                                     Document Summary
                                                 </DialogTitle>
                                                 <DialogDescription>
-                                                    AI-generated summary of "{doc.filename}"
+                                                    AI-generated summary of &quot;{doc.filename}&quot;
                                                 </DialogDescription>
                                             </DialogHeader>
 

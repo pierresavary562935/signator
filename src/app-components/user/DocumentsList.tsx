@@ -13,7 +13,6 @@ import { useRouter } from "next/navigation";
 import { getStatusBadge } from "@/lib/badge-utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { SigningRequestWithDocument } from "@/lib/interfaces";
-import { Skeleton } from "@/components/ui/skeleton";
 
 export default function DocumentsList() {
     const router = useRouter();

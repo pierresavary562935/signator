@@ -1,5 +1,3 @@
-// metadata endpoint return total page of the document and positions
-
 import { NextResponse, NextRequest } from "next/server";
 import { prisma } from "@/prisma";
 import { requiredCurrentUser } from "@/lib/current-user";

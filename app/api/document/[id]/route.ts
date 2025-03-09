@@ -46,22 +46,38 @@ export async function GET(
     }
   }
 
-  const filePath = path.join(
-    process.cwd(),
-    "private/documents",
-    document.filePath
-  ); // Secure path
+  // secure file path
+  const sanitizedFileName = path.basename(document.filePath);
+  const documentsDirectory = path.join(process.cwd(), "private/documents");
+
+  const filePath = path.join(documentsDirectory, sanitizedFileName);
+
+  // check if the filepath is in the documents directory
+  if (!filePath.startsWith(documentsDirectory)) {
+    console.error("Security violation: Attempted path traversal", {
+      originalPath: document.filePath,
+      sanitizedPath: filePath,
+    });
+    return NextResponse.json({ message: "Invalid file path" }, { status: 400 });
+  }
 
   if (!fs.existsSync(filePath)) {
     return NextResponse.json({ message: "File not found" }, { status: 404 });
   }
 
-  const fileBuffer = fs.readFileSync(filePath);
-  return new NextResponse(fileBuffer, {
-    headers: {
-      "Content-Type": "application/pdf",
-      // "Content-Disposition": `attachment; filename="${document.filename}"`,
-      "Content-Disposition": `inline; filename="${document.filename}"`,
-    },
-  });
+  try {
+    const fileBuffer = fs.readFileSync(filePath);
+    return new NextResponse(fileBuffer, {
+      headers: {
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `inline; filename="${document.filename}"`,
+      },
+    });
+  } catch (error) {
+    console.error("Error reading file:", error);
+    return NextResponse.json(
+      { message: "Error reading file" },
+      { status: 500 }
+    );
+  }
 }

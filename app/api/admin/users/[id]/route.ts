@@ -1,4 +1,3 @@
-import { auth } from "@/auth";
 import { requiredCurrentUser } from "@/lib/current-user";
 import { prisma } from "@/prisma";
 import { User } from "@prisma/client";

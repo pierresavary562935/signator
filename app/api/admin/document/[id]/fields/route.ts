@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/prisma";
 import { requiredCurrentUser } from "@/lib/current-user";
-
-// Type for the positions object coming from client
 interface PositionsData {
   [page: string]: {
     [fieldName: string]: { x: number; y: number };
@@ -21,7 +19,7 @@ export async function POST(
 
   const { id } = params;
 
-  // Get positions, pdfWidth and pdfHeight
+  // Get positions, pdfWidth and pdfHeight from request body
   const {
     positions,
     pdfWidth,

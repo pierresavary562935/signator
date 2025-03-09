@@ -17,7 +17,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Eye, RefreshCcw, FileSignature, FilePen } from "lucide-react";
 import { fetchUserSigningRequests } from "@/lib/actions/user/signing-requests-actions";
-import { Skeleton } from "@/components/ui/skeleton";
 import PageHeader from "../PageHeader";
 
 // Extended types
@@ -28,7 +27,6 @@ type SigningRequestWithDocument = SigningRequest & {
 export default function SigningRequestsPage() {
     const router = useRouter();
     const [requests, setRequests] = useState<SigningRequestWithDocument[]>([]);
-    const [signedRequests, setSignedRequests] = useState<SigningRequestWithDocument[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -40,10 +38,8 @@ export default function SigningRequestsPage() {
         try {
             const allRequests = await fetchUserSigningRequests();
             const pending = allRequests.filter(req => req.status === "PENDING");
-            const signed = allRequests.filter(req => req.status === "SIGNED");
 
             setRequests(pending as SigningRequestWithDocument[]);
-            setSignedRequests(signed as SigningRequestWithDocument[]);
         } catch (error) {
             console.error("Error fetching signing requests:", error);
             toast.error("Failed to fetch signing requests");

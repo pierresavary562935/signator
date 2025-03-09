@@ -1,10 +1,7 @@
-import UserMenu from "@/app-components/UserMenu";
 import { redirect } from "next/navigation";
 import { requiredCurrentUser } from "@/lib/current-user";
 import { User } from "@prisma/client";
-import SigningRequestsCardList from "@/app-components/user/SIgningRequestCardList";
-import PageHeader from "@/app-components/PageHeader";
-import { FilePen, Files } from "lucide-react";
+import SigningRequestsCardList from "@/app-components/user/SigningRequestCardList";
 
 export default async function HomePage() {
   const user = (await requiredCurrentUser()) as User;

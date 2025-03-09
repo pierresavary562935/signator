@@ -86,11 +86,20 @@ export async function GET(
     );
   }
 
-  const filePath = path.join(
-    process.cwd(),
-    "private/documents",
-    document.filePath
-  );
+  // secure filename
+  const sanitizedFileName = path.basename(document.filePath);
+  const documentsDirectory = path.join(process.cwd(), "private/documents");
+
+  const filePath = path.join(documentsDirectory, sanitizedFileName);
+
+  // check if the filepath is inside the private/documents directory
+  if (!filePath.startsWith(documentsDirectory)) {
+    console.error("Security violation: Attempted path traversal", {
+      originalPath: document.filePath,
+      sanitizedPath: filePath,
+    });
+    return NextResponse.json({ message: "Invalid file path" }, { status: 400 });
+  }
 
   if (!fs.existsSync(filePath)) {
     return NextResponse.json({ message: "File not found" }, { status: 404 });
@@ -99,7 +108,7 @@ export async function GET(
   try {
     const fileBuffer = fs.readFileSync(filePath);
 
-    // Load the full PDF
+    //load the pdf
     const pdfDoc = await PDFDocument.load(fileBuffer);
 
     if (pageNumber > pdfDoc.getPageCount()) {
@@ -109,12 +118,11 @@ export async function GET(
       );
     }
 
-    // Create a new PDF document
+    // create a new PDF with the requested page
     const newPdf = await PDFDocument.create();
-    const [copiedPage] = await newPdf.copyPages(pdfDoc, [pageNumber - 1]); // `pageNumber - 1` because index is 0-based
+    const [copiedPage] = await newPdf.copyPages(pdfDoc, [pageNumber - 1]);
     newPdf.addPage(copiedPage);
 
-    // Serialize the new PDF to a buffer
     const newPdfBytes = await newPdf.save();
 
     return new NextResponse(newPdfBytes, {

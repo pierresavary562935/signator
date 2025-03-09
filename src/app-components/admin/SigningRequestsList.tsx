@@ -12,13 +12,6 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
-import {
     Dialog,
     DialogContent,
     DialogHeader,
@@ -38,6 +31,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import NewSigningRequestDialog from "./NewSigningRequestDialog";
 import { SigningRequestWithDocument } from "@/lib/interfaces";
 import PageHeader from "../PageHeader";
+import { User } from "@prisma/client";
 
 export function SigningRequestsList() {
     const [selectedRequest, setSelectedRequest] = useState<SigningRequestWithDocument | null>(null);
@@ -93,7 +87,7 @@ export function SigningRequestsList() {
         }
         groups[userKey].requests.push(request);
         return groups;
-    }, {} as Record<string, { user: any, requests: SigningRequestWithDocument[] }>);
+    }, {} as Record<string, { user: User, requests: SigningRequestWithDocument[] }>);
 
     // Get user initials for avatar
     const getInitials = (name: string) => {
@@ -148,7 +142,7 @@ export function SigningRequestsList() {
         <>
             <PageHeader title="Signing Requests">
                 <div className="flex items-center gap-4">
-                    <ToggleGroup type="single" value={viewMode} onValueChange={(value: any) => value && setViewMode(value as "list" | "grouped")}>
+                    <ToggleGroup type="single" value={viewMode} onValueChange={(value) => value && setViewMode(value as "list" | "grouped")}>
                         <ToggleGroupItem value="list" aria-label="List view">
                             <List className="h-4 w-4" />
                         </ToggleGroupItem>
@@ -272,7 +266,9 @@ export function SigningRequestsList() {
                             <CollapsibleTrigger className="flex items-center justify-between w-full p-4 hover:bg-gray-50">
                                 <div className="flex items-center gap-3">
                                     <Avatar>
-                                        <AvatarImage src={user.image} />
+                                        {user.image &&
+                                            <AvatarImage src={user.image} />
+                                        }
                                         <AvatarFallback>{user.name ? getInitials(user.name) : user.email?.[0]?.toUpperCase() || "?"}</AvatarFallback>
                                     </Avatar>
                                     <div className="flex flex-col items-start">
@@ -454,7 +450,7 @@ export function SigningRequestsList() {
                                             <AlertDialogHeader>
                                                 <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                                                 <AlertDialogDescription>
-                                                    This will mark the document as signed without the recipient's signature. This action cannot be undone.
+                                                    This will mark the document as signed without the recipient&apos;s signature. This action cannot be undone.
                                                 </AlertDialogDescription>
                                             </AlertDialogHeader>
                                             <AlertDialogFooter>

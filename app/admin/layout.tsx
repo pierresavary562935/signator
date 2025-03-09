@@ -2,9 +2,7 @@ import "../globals.css";
 import { requiredCurrentUser } from "@/lib/current-user";
 import { redirect } from "next/navigation";
 import { User } from "@prisma/client";
-import UserMenu from "@/app-components/UserMenu";
 import AdminSidebar from "@/app-components/admin/AdminSidebar";
-
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
 	const user = await requiredCurrentUser() as User;

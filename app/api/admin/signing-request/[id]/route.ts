@@ -20,7 +20,7 @@ export async function DELETE(
     );
   }
 
-  const signingRequest = await prisma.signingRequest.delete({
+  await prisma.signingRequest.delete({
     where: { id: id },
   });
 

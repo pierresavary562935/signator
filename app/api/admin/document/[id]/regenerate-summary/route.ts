@@ -19,10 +19,11 @@ const pdfParse = async (fileBuffer: Buffer): Promise<string> => {
 
     pdfParser.on("pdfParser_dataReady", (pdfData) => {
       // Extract text from all pages
-      const extractedText = pdfData.Pages.map((page: any) =>
-        page.Texts.map((textObj: any) => decodeURIComponent(textObj.R[0].T)) // Decode URI encoded text
-          .join(" ")
-      ).join("\n\n"); // Join pages with spacing
+      const extractedText = pdfData.Pages.map((page) =>
+        page.Texts.map((textObj) => decodeURIComponent(textObj.R[0].T)).join(
+          " "
+        )
+      ).join("\n\n");
 
       resolve(extractedText);
     });
@@ -47,7 +48,6 @@ export async function POST(
       maxTokens = 300,
       customPrompt = false,
       promptText = "Summarize the following document:",
-      formatOutput = false,
       outputType = "summary",
       bulletPoints = false,
       highlightKeyPoints = false,
