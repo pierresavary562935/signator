@@ -15,6 +15,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import axios from "axios";
 import { toast } from "sonner";
 import { SigningRequestWithDocument } from "@/lib/interfaces";
+import { Input } from "@/components/ui/input";
 
 interface DocumentPreviewComponentProps {
     selectedRequest: SigningRequestWithDocument | undefined;
@@ -34,6 +35,9 @@ export default function DocumentPreviewComponent({ selectedRequest, onSignSucces
     const [openAgreement, setOpenAgreement] = useState(false);
     const [documentLoaded, setDocumentLoaded] = useState(false);
     const [from, setFrom] = useState("documents");
+
+    const [name, setName] = useState("");
+    const [signature, setSignature] = useState("");
 
     const handleFrameLoaded = () => {
         const iframe = document.querySelector("iframe");
@@ -68,9 +72,29 @@ export default function DocumentPreviewComponent({ selectedRequest, onSignSucces
     };
 
     const handleSignDocument = async () => {
+        if (!name || !signature) {
+            toast.error("Please provide all information.");
+            return;
+        }
+
         setSigning(true);
+
         try {
-            const response = await axios.patch(`/api/signing-request/${requestId}`);
+            const generateResponse = await axios.post(`/api/document/generate`, {
+                docId: documentId,
+                userName: name,
+                signedAt: new Date().toISOString(),
+                signature,
+            });
+
+            if (!generateResponse.data || !generateResponse.data.pdfUrl) {
+                throw new Error("Failed to generate signed document.");
+            }
+
+            const signedDocumentId = generateResponse.data.signedDocumentId;
+
+            const response = await axios.patch(`/api/signing-request/${requestId}`, { signedDocumentId });
+
             if (response.data.createdAt) {
                 toast.success("Document signed successfully on " + formatDate(response.data.createdAt));
                 setOpenAgreement(false);
@@ -83,6 +107,7 @@ export default function DocumentPreviewComponent({ selectedRequest, onSignSucces
             setSigning(false);
         }
     };
+
     return (
         <>
             {/* Header */}
@@ -251,22 +276,33 @@ export default function DocumentPreviewComponent({ selectedRequest, onSignSucces
                 <Dialog open={openAgreement} onOpenChange={() => setOpenAgreement(false)}>
                     <DialogContent>
                         <DialogTitle hidden>Sign Document Dialog</DialogTitle>
-                        <div className="flex items-start space-x-3">
-                            <Checkbox
-                                id="agreement"
-                                checked={agreed}
-                                onCheckedChange={(checked) => setAgreed(checked as boolean)}
-                            />
-                            <div>
-                                <Label
-                                    htmlFor="agreement"
-                                    className="font-medium"
-                                >
-                                    I have read and agree to the terms of this document
-                                </Label>
-                                <p className="text-sm text-muted-foreground mt-1">
-                                    By checking this box, I confirm that I have reviewed the document and agree to sign electronically.
-                                </p>
+                        <div className="grid grid-cols-2 gap-4">
+
+
+                            <Label>Name</Label>
+                            <Input value={name} onChange={(e) => setName(e.target.value)} />
+
+                            <Label>Signature (Type your name)</Label>
+                            <Input value={signature} onChange={(e) => setSignature(e.target.value)} />
+
+                            <div className="col-span-2 flex items-center gap-4">
+
+                                <Checkbox
+                                    id="agreement"
+                                    checked={agreed}
+                                    onCheckedChange={(checked) => setAgreed(checked as boolean)}
+                                />
+                                <div>
+                                    <Label
+                                        htmlFor="agreement"
+                                        className="font-medium"
+                                    >
+                                        I have read and agree to the terms of this document
+                                    </Label>
+                                    <p className="text-sm text-muted-foreground mt-1">
+                                        By checking this box, I confirm that I have reviewed the document and agree to sign electronically.
+                                    </p>
+                                </div>
                             </div>
                         </div>
                         <DialogFooter>
@@ -279,7 +315,7 @@ export default function DocumentPreviewComponent({ selectedRequest, onSignSucces
                             </Button>
                             <Button
                                 onClick={handleSignDocument}
-                                disabled={!agreed || signing}
+                                disabled={!agreed || !name || !signature || signing}
                                 className="order-1 sm:order-2"
                             >
                                 {signing ? (

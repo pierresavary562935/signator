@@ -30,7 +30,10 @@ export default function NewSigningRequestDialog({ onCreate }: { onCreate?: () =>
 
     useEffect(() => {
         fetchUsers().then(setUsers);
-        fetchDocuments().then(setDocuments);
+        fetchDocuments().then(
+            // filter by draft status
+            (docs) => setDocuments(docs.filter((doc: any) => doc.status === "DRAFT"))
+        );
     }, []);
 
     const fetchDocuments = async () => {

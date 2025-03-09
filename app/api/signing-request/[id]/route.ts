@@ -43,6 +43,7 @@ export async function PATCH(
   }
 
   const { id } = await params;
+  const { signedDocumentId } = await req.json();
 
   if (!id) {
     return NextResponse.json(
@@ -72,7 +73,11 @@ export async function PATCH(
 
     const updatedRequest = await prisma.signingRequest.update({
       where: { id: String(id) },
-      data: { status: "SIGNED", signedAt: new Date() },
+      data: {
+        status: "SIGNED",
+        signedAt: new Date(),
+        documentId: signedDocumentId,
+      },
     });
 
     return NextResponse.json(updatedRequest);
