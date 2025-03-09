@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
     }
 
-    const { docId, userName, signature } = await req.json();
+    const { requestId, docId, userName, signature } = await req.json();
 
     // Fetch the original document from the database
     const originalDocument = await prisma.document.findUnique({
@@ -29,6 +29,7 @@ export async function POST(req: NextRequest) {
     // Check if the user has access to the document
     const signingRequest = await prisma.signingRequest.findFirst({
       where: {
+        id: requestId,
         documentId: originalDocument.id,
         userId: user.id,
       },
@@ -55,25 +56,21 @@ export async function POST(req: NextRequest) {
     const pdfDoc = await PDFDocument.load(existingPdfBytes);
 
     // Get original PDF page dimensions
-    const firstPage = pdfDoc.getPages()[0]; // Assume first page for size reference
+    const firstPage = pdfDoc.getPages()[0];
     const { width: originalPdfWidth, height: originalPdfHeight } =
       firstPage.getSize();
-    const { pdfWidth, pdfHeight } = originalDocument.fieldPositions.reduce(
-      (acc, field) => {
-        acc.pdfWidth = Math.max(acc.pdfWidth, field.x);
-        acc.pdfHeight = Math.max(acc.pdfHeight, field.y);
-        return acc;
-      },
-      { pdfWidth: 0, pdfHeight: 0 }
-    );
+
+    // Instead of computing max values, use saved preview dimensions from a field position.
+    const firstField = originalDocument.fieldPositions[0];
+    const previewPdfWidth = firstField?.pdfWidth || originalPdfWidth;
+    const previewPdfHeight = firstField?.pdfHeight || originalPdfHeight;
+
+    // Calculate scale factor between original PDF dimensions and the preview dimensions.
+    const scaleX = originalPdfWidth / previewPdfWidth;
+    const scaleY = originalPdfHeight / previewPdfHeight;
 
     console.log("Original PDF size:", originalPdfWidth, originalPdfHeight);
-    console.log("Rendered PDF size:", pdfWidth, pdfHeight);
-
-    // Calculate scale factor between original PDF and displayed PDF
-    const scaleX = originalPdfWidth / pdfWidth;
-    const scaleY = originalPdfHeight / pdfHeight;
-
+    console.log("Preview PDF size:", previewPdfWidth, previewPdfHeight);
     console.log("Scale factors:", scaleX, scaleY);
 
     // Group positions by page
@@ -93,10 +90,10 @@ export async function POST(req: NextRequest) {
       if (page) {
         for (const field of fields) {
           let text = "";
-          if (field.fieldName === "name") text = `Signed by: ${userName}`;
+          if (field.fieldName === "name") text = `${userName}`;
           if (field.fieldName === "signedAt")
             text = `Signed at: ${new Date().toLocaleString()}`;
-          if (field.fieldName === "signature") text = `Signature: ${signature}`;
+          if (field.fieldName === "signature") text = `${signature}`;
 
           // Scale and flip Y-coordinates
           const adjustedX = field.x * scaleX;
@@ -115,7 +112,7 @@ export async function POST(req: NextRequest) {
     // Save the signed PDF with a new filename
     const signedFileName = `${
       path.parse(originalDocument.filePath).name
-    }_signed.pdf`;
+    }_signed_${Date.now()}.pdf`;
     const signedFilePath = path.join(
       process.cwd(),
       "private/documents",
@@ -128,9 +125,9 @@ export async function POST(req: NextRequest) {
     const signedDocument = await prisma.document.create({
       data: {
         title: `${originalDocument.title} (Signed)`,
-        filename: signedFileName,
+        filename: `${originalDocument.filename}_signed_${Date.now()}.pdf`,
         filePath: signedFileName,
-        ownerId: user.id, // Set the signed document's owner
+        ownerId: user.id,
         status: "SIGNED",
         // originalDocumentId: originalDocument.id, // Link to the original document
       },
@@ -138,7 +135,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       message: "Signed document created successfully",
-      pdfUrl: `/api/document/${signedDocument.id}`, // API endpoint to fetch the new file
+      pdfUrl: `/api/document/${signedDocument.id}`,
       signedDocumentId: signedDocument.id,
     });
   } catch (error) {

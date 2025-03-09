@@ -1,10 +1,9 @@
-import { auth } from "@/auth";
 import { requiredCurrentUser } from "@/lib/current-user";
 import { prisma } from "@/prisma";
 import { User } from "@prisma/client";
 import { NextResponse } from "next/server";
 
-export async function GET(req: Request) {
+export async function GET() {
   // Check if user is authenticated
   const user = (await requiredCurrentUser()) as User;
   if (!user) {

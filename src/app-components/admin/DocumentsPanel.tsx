@@ -7,7 +7,7 @@ import NewDocumentDialog from "./NewDocumentDialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Document } from "@prisma/client";
-import { Bot, Download, ExternalLink, Eye, FileText, RefreshCcw, ScanText, Search, Trash } from "lucide-react";
+import { Bot, Download, ExternalLink, FileText, RefreshCcw, ScanText, Search, Trash } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -21,7 +21,6 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import PageHeader from "../PageHeader";
-import GenerateNewDocumentDialog from "./GenerateNewDocumentDialog";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { getStatusBadge } from "@/lib/badge-utils";
@@ -29,7 +28,6 @@ import { getStatusBadge } from "@/lib/badge-utils";
 export default function DocumentsPanel() {
     const [documents, setDocuments] = useState<Document[]>([]);
     const [loading, setLoading] = useState(true);
-    const [openConfirmDelete, setOpenConfirmDelete] = useState(false);
     const [summaryLoading, setSummaryLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -401,12 +399,7 @@ export default function DocumentsPanel() {
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
                                             <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                            <AlertDialogAction onClick={
-                                                () => {
-                                                    handleDelete(doc.id);
-                                                    setOpenConfirmDelete(false);
-                                                }
-                                            } className="bg-red-500 hover:bg-red-600">
+                                            <AlertDialogAction onClick={() => handleDelete(doc.id)} className="bg-red-500 hover:bg-red-600">
                                                 Delete
                                             </AlertDialogAction>
                                         </AlertDialogFooter>
@@ -425,7 +418,6 @@ export default function DocumentsPanel() {
         <>
             <PageHeader title="Documents">
                 <NewDocumentDialog onUpload={fetchDocuments} />
-                <GenerateNewDocumentDialog onUpload={fetchDocuments} />
             </PageHeader>
 
             <div className="flex items-center space-x-2">
