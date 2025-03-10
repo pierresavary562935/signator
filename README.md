@@ -39,7 +39,7 @@ Signator is a Next.js application that enables secure document signing with PDF 
 
 ## Getting Started
 
-### Development Environment
+### Development Environment (connect your own db)
 
 1. Clone the repository:
 
@@ -58,12 +58,14 @@ yarn install
 pnpm install
 ```
 
-3. Configure environment variables by creating a `.env.local` and  `.env` file
+3. Create a database "signator" and it's user, then configure environment variables by creating a `.env.local` and  `.env` file
 
   - `.env.local` based on `.env.example`
   - and `.env` with only DATABASE_URL inside (for prisma)
 
 5. Prisma setup:
+
+In schema.prisma set the db provider according your local db : 'mysql' or 'postgresql'
    
 ```bash
 npx prisma generate
