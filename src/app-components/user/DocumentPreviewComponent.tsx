@@ -69,6 +69,7 @@ export default function DocumentPreviewComponent({ selectedRequest, onSignSucces
         } else {
             fetchSummary();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedRequest, documentId]);
 
     useEffect(() => {

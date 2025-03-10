@@ -44,6 +44,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     strategy: "jwt",
   },
   callbacks: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async jwt({ token, user }: { token: any; user: any }) {
       if (user) {
         token.id = user.id;
@@ -53,8 +54,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
       return token;
     },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async session({ session, token }: { session: any; token: any }) {
       if (!session.user) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         session.user = {} as any;
       }
 

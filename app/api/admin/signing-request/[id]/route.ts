@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const user = (await requiredCurrentUser()) as User;
   if (!user || user.role !== "ADMIN") {
@@ -29,7 +29,7 @@ export async function DELETE(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const user = (await requiredCurrentUser()) as User;
   if (!user || user.role !== "ADMIN") {

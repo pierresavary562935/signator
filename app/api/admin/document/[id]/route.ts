@@ -9,7 +9,7 @@ import { PDFDocument } from "pdf-lib";
 // DELETE /admin/document/:id (deletes a document)
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const user = (await requiredCurrentUser()) as User;
   if (!user || user.role !== "ADMIN") {
@@ -55,7 +55,7 @@ export async function DELETE(
 // GET /admin/document/:id?page=1 (returns a single page of the document)
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const user = await requiredCurrentUser();
 
@@ -63,7 +63,7 @@ export async function GET(
     return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
   }
 
-  const { id } = params;
+  const { id } = await params;
   const url = new URL(req.url);
   const pageNumber = parseInt(url.searchParams.get("page") || "1", 10);
 
@@ -143,7 +143,7 @@ export async function GET(
 // PATCH /admin/document/:id (sets document status to "READY")
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await requiredCurrentUser();
@@ -151,7 +151,7 @@ export async function PATCH(
       return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
     }
 
-    const { id } = params;
+    const { id } = await params;
     if (!id) {
       return NextResponse.json(
         { message: "Missing document ID" },

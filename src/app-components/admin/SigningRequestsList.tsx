@@ -127,7 +127,7 @@ export function SigningRequestsList() {
         const userKey = request.userId || request.email || 'unknown';
         if (!groups[userKey]) {
             groups[userKey] = {
-                user: request.user || { id: userKey, email: request.email || 'No email', name: 'External User' },
+                user: request.user,
                 requests: []
             };
         }
@@ -206,7 +206,9 @@ export function SigningRequestsList() {
     // Sort the filtered requests
     const sortedRequests = useMemo(() => {
         return [...filteredRequests].sort((a, b) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             let aValue: any = a[sortField as keyof typeof a];
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             let bValue: any = b[sortField as keyof typeof b];
 
             // Handle nested fields
@@ -419,7 +421,7 @@ export function SigningRequestsList() {
                                                     </TableCell>
                                                     <TableCell>
                                                         <Badge
-                                                            variant={request.status.toLowerCase() === "signed" ? "success" : "outline"}
+                                                            variant={request.status.toLowerCase() === "signed" ? "default" : "outline"}
                                                             className={request.status.toLowerCase() === "signed" ? "bg-green-100 text-green-800" : ""}
                                                         >
                                                             {request.status}
@@ -432,7 +434,7 @@ export function SigningRequestsList() {
                                                                     <span>{formatDate(request.createdAt, "relative")}</span>
                                                                 </TooltipTrigger>
                                                                 <TooltipContent>
-                                                                    <p>{formatDate(request.createdAt, "medium")}</p>
+                                                                    <p>{formatDate(request.createdAt, "dateTime")}</p>
                                                                 </TooltipContent>
                                                             </Tooltip>
                                                         </TooltipProvider>
@@ -662,7 +664,7 @@ export function SigningRequestsList() {
                                                 </div>
                                                 <div>
                                                     <div className="text-sm font-medium">Created At</div>
-                                                    <div>{formatDate(selectedRequest.document.createdAt, "medium")}</div>
+                                                    <div>{formatDate(selectedRequest.document.createdAt, "dateTime")}</div>
                                                 </div>
                                                 <div className="flex space-x-2">
                                                     <Button
@@ -726,7 +728,7 @@ export function SigningRequestsList() {
                                                 <div>
                                                     <div className="text-sm font-medium">Current Status</div>
                                                     <Badge
-                                                        variant={selectedRequest.status.toLowerCase() === "signed" ? "success" : "outline"}
+                                                        variant={selectedRequest.status.toLowerCase() === "signed" ? "default" : "outline"}
                                                         className={selectedRequest.status.toLowerCase() === "signed" ? "bg-green-100 text-green-800" : ""}
                                                     >
                                                         {selectedRequest.status}
@@ -735,13 +737,13 @@ export function SigningRequestsList() {
 
                                                 <div>
                                                     <div className="text-sm font-medium">Created At</div>
-                                                    <div>{formatDate(selectedRequest.createdAt, "medium")}</div>
+                                                    <div>{formatDate(selectedRequest.createdAt, "dateTime")}</div>
                                                 </div>
 
                                                 {selectedRequest.signedAt && (
                                                     <div>
                                                         <div className="text-sm font-medium">Signed At</div>
-                                                        <div>{formatDate(selectedRequest.signedAt, "medium")}</div>
+                                                        <div>{formatDate(selectedRequest.signedAt, "dateTime")}</div>
                                                     </div>
                                                 )}
                                             </div>

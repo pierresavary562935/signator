@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 // GET /signing-request/:id (returns a signing request)
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const user = (await requiredCurrentUser()) as User;
   if (!user) {
@@ -38,7 +38,7 @@ export async function GET(
 // body: { signedDocumentId: string }
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const user = (await requiredCurrentUser()) as User;
   if (!user) {

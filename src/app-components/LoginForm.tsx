@@ -10,7 +10,7 @@ import { loginCredentials, loginGitHub, loginGoogle } from "@/lib/actions/auth"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 
 export function LoginForm({ className, ...props }: { className?: string }) {
     const router = useRouter();
@@ -28,7 +28,7 @@ export function LoginForm({ className, ...props }: { className?: string }) {
         if (isSignup) {
             // Signup logic
             try {
-                const response = await axios.post("/api/auth/signup", { name, email, password });
+                const response: AxiosResponse = await axios.post("/api/auth/signup", { name, email, password });
 
                 if (response.status === 201) {
                     // Auto-login after signup
@@ -37,6 +37,7 @@ export function LoginForm({ className, ...props }: { className?: string }) {
                 } else {
                     setError(response.data.error || "Signup failed");
                 }
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch (err: any) {
                 setError(err.response?.data?.error || "Something went wrong. Please try again.");
             }
@@ -45,6 +46,7 @@ export function LoginForm({ className, ...props }: { className?: string }) {
             try {
                 await loginCredentials(email, password);
                 router.push("/home");
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch (err: any) {
                 setError(err.response?.data?.error || "Invalid email or password.");
             }

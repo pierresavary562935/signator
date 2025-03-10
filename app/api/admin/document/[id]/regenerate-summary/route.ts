@@ -34,7 +34,7 @@ const pdfParse = async (fileBuffer: Buffer): Promise<string> => {
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id: documentId } = await params;

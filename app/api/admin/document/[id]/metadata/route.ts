@@ -8,7 +8,7 @@ import path from "path";
 // GET /admin/document/:id/metadata (returns total page of the document and positions)
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const user = await requiredCurrentUser();
   if (!user || user.role !== "ADMIN") {

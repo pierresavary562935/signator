@@ -22,7 +22,6 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuLabel,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -41,7 +40,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Loader2, MoreHorizontal, Search, Pencil, Key, UserX, CheckCircle2 } from "lucide-react";
+import { Loader2, MoreHorizontal, Search, Pencil, UserX, CheckCircle2 } from "lucide-react";
 import axios, { AxiosResponse } from "axios";
 import { Document, SigningRequest, User } from "@prisma/client";
 import { formatDate } from "@/lib/date-utils";
@@ -100,10 +99,11 @@ export default function UserManagement() {
         setIsEditUserOpen(true);
     };
 
-    const handleResetPassword = (user: ExtendedUser) => {
-        setSelectedUser(user);
-        setIsResetPasswordOpen(true);
-    };
+    // TODO: Implement password reset
+    // const handleResetPassword = (user: ExtendedUser) => {
+    //     setSelectedUser(user);
+    //     setIsResetPasswordOpen(true);
+    // };
 
     const handleSaveUserEdit = async () => {
         if (!selectedUser) {

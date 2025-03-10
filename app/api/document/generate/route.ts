@@ -138,7 +138,7 @@ export async function POST(req: NextRequest) {
       const signedDocument = await prisma.document.create({
         data: {
           title: `${originalDocument.title} (Signed)`,
-          filename: `${originalDocument.filename} (Signed)`,
+          filename: `signed_${originalDocument.filename}`,
           filePath: signedFileName, // Store only the filename
           ownerId: user.id,
           status: "SIGNED",

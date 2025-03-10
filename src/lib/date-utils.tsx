@@ -1,5 +1,5 @@
 // src/lib/date-utils.ts
-import { format, formatRelative as formatRelativeFn, parseISO, formatDistance } from 'date-fns';
+import { format, parseISO, formatDistance } from 'date-fns';
 
 type DateFormat =
     | 'default'       // Feb 3, 2024

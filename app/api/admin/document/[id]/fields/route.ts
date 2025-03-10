@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { prisma } from "@/prisma";
 import { requiredCurrentUser } from "@/lib/current-user";
 interface PositionsData {
@@ -9,15 +9,15 @@ interface PositionsData {
 
 // POST /admin/document/:id/fields (saves field positions for a document)
 export async function POST(
-  req: NextRequest,
-  { params }: { params: { id: string } }
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const user = await requiredCurrentUser();
   if (!user || user.role !== "ADMIN") {
     return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
   }
 
-  const { id } = params;
+  const { id } = await params;
 
   // Get positions, pdfWidth and pdfHeight from request body
   const {

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   database:
     image: mysql:8
@@ -24,13 +22,10 @@ services:
     container_name: signator_app
     build:
       context: .
+    env_file:
+      - .env.local
     environment:
       NODE_ENV: development
-      DATABASE_URL: "mysql://signator:ib4psqegbQHdSS7k@database:3306/signator"
-      NEXTAUTH_URL: "http://localhost:3000"
-      NEXTAUTH_SECRET: "Db3mwtDhQFwh/2UAPMzeMsgrhZ3XRkfiH4JoDOkj1a0="
-      AUTH_SECRET: "Db3mwtDhQFwh/2UAPMzeMsgrhZ3XRkfiH4JoDOkj1a0="
-      OPENAI_API_KEY: "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"
     depends_on:
       database:
         condition: service_healthy

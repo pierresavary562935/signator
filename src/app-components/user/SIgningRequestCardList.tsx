@@ -36,7 +36,7 @@ export default function SigningRequestsPage() {
     const fetchSigningRequests = async () => {
         setLoading(true);
         try {
-            const allRequests = await fetchUserSigningRequests();
+            const allRequests: SigningRequest[] = await fetchUserSigningRequests();
             const pending = allRequests.filter(req => req.status === "PENDING");
 
             setRequests(pending as SigningRequestWithDocument[]);

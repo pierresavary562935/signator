@@ -1,6 +1,23 @@
 # Signator
 
-Signator is a Next.js application that enables secure document signing with PDF handling capabilities. Built with Next.js, Prisma, and shadcn UI, it provides a modern, responsive interface for document management and digital signatures.
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/yourusername/signator)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![Docker](https://img.shields.io/badge/docker-ready-blue)](https://hub.docker.com/)
+
+## Table of Contents
+- [Signator](#signator)
+  - [Table of Contents](#table-of-contents)
+  - [Overview](#overview)
+  - [Features](#features)
+  - [Technology Stack](#technology-stack)
+  - [Getting Started](#getting-started)
+    - [Development Environment](#development-environment)
+    - [Using Docker](#using-docker)
+  - [Contributing](#contributing)
+  - [Acknowledgments](#acknowledgments)
+
+## Overview
+Signator is a Next.js application that enables secure document signing with PDF handling capabilities.
 
 ## Features
 
@@ -43,7 +60,14 @@ pnpm install
 
 3. Configure environment variables by creating a `.env.local` file based on `.env.example`.
 
-4. Run the development server:
+4. Prisma setup:
+   
+```bash
+npx prisma generate
+npx prisma migrate dev
+```
+
+5. Run the development server:
 
 ```bash
 npm run dev
@@ -53,9 +77,11 @@ yarn dev
 pnpm dev
 ```
 
-5. Open [http://localhost:3000](http://localhost:3000) with your browser.
+6. Open [http://localhost:3000](http://localhost:3000) with your browser.
 
 ### Using Docker
+
+open docker desktop or make sure docker daemon is running
 
 1. Build and start the containers:
 
@@ -66,10 +92,20 @@ docker-compose up --build
 2. Apply Prisma migrations:
 
 ```bash
-docker-compose exec app npx prisma migrate deploy
+docker exec -it signator_db mysql -u root -p // password : root
+GRANT ALL PRIVILEGES ON *.* TO 'signator'@'%' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+exit;
 ```
 
-3. Access the application at [http://localhost:3000](http://localhost:3000).
+```bash
+docker exec -it signator_app npx prisma migrate dev        
+```
+
+1. Access the application at [http://localhost:3000](http://localhost:3000).
+
+## Contributing
+Contributions are welcome! Please fork the repository, make your changes, and submit a pull request.
 
 ## Acknowledgments
 
