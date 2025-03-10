@@ -44,7 +44,7 @@ Signator is a Next.js application that enables secure document signing with PDF 
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/signator.git
+git clone https://github.com/pierresavary562935/signator.git
 cd signator
 ```
 
