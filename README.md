@@ -44,7 +44,7 @@ Signator is a Next.js application that enables secure document signing with PDF 
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/signator.git
+git clone https://github.com/pierresavary562935/signator.git
 cd signator
 ```
 
@@ -58,9 +58,12 @@ yarn install
 pnpm install
 ```
 
-3. Configure environment variables by creating a `.env.local` file based on `.env.example`.
+3. Configure environment variables by creating a `.env.local` and  `.env` file
 
-4. Prisma setup:
+  - `.env.local` based on `.env.example`
+  - and `.env` with only DATABASE_URL inside (for prisma)
+
+5. Prisma setup:
    
 ```bash
 npx prisma generate
@@ -103,9 +106,6 @@ docker exec -it signator_app npx prisma migrate dev
 ```
 
 1. Access the application at [http://localhost:3000](http://localhost:3000).
-
-## Contributing
-Contributions are welcome! Please fork the repository, make your changes, and submit a pull request.
 
 ## Acknowledgments
 
