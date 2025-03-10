@@ -7,12 +7,12 @@ import NewDocumentDialog from "./NewDocumentDialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Document } from "@prisma/client";
-import { Bot, Download, ExternalLink, FileText, RefreshCcw, ScanText, Search, Trash } from "lucide-react";
+import { Bot, Download, ExternalLink, FileSignature, FileText, RefreshCcw, ScanText, Search, Trash } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -415,48 +415,60 @@ export default function DocumentsPanel() {
 
     return (
         <>
-            <PageHeader title="Documents">
-                <NewDocumentDialog onUpload={fetchDocuments} />
-            </PageHeader>
-
-            <div className="flex items-center space-x-2">
-                <Search className="w-4 h-4 text-gray-500" />
-                <Input
-                    placeholder="Search documents..."
-                    className="max-w-sm"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
-            </div>
-
             <Card>
+                <CardHeader className="flex flex-col md:flex-row items-start md:items-center justify-between">
+                    <div className="flex flex-row items-center gap-2">
+                        <FileSignature className="h-5 w-5 text-primary" />
+                        <div>
+                            <CardTitle>Documents</CardTitle>
+                            <CardDescription>
+                                View and manage all documents across the platform
+                            </CardDescription>
+                        </div>
+                    </div>
+                    <NewDocumentDialog onUpload={fetchDocuments} />
+                </CardHeader>
                 <CardContent>
-                    <Tabs defaultValue="all" className="w-full">
-                        <TabsList className="mb-4">
-                            <TabsTrigger value="all">All ({filteredDocuments.length})</TabsTrigger>
-                            <TabsTrigger value="pending">Draft ({draftDocuments.length})</TabsTrigger>
-                            <TabsTrigger value="ready">Ready ({readyDocuments.length})</TabsTrigger>
-                            <TabsTrigger value="signed">Signed ({signedDocuments.length})</TabsTrigger>
-                        </TabsList>
-                        <TabsContent value="all">
-                            {renderDocumentTable(filteredDocuments)}
-                        </TabsContent>
-                        <TabsContent value="pending">
-                            {renderDocumentTable(draftDocuments.filter(doc =>
-                                doc.title.toLowerCase().includes(searchTerm.toLowerCase())
-                            ))}
-                        </TabsContent>
-                        <TabsContent value="ready">
-                            {renderDocumentTable(readyDocuments.filter(doc =>
-                                doc.title.toLowerCase().includes(searchTerm.toLowerCase())
-                            ))}
-                        </TabsContent>
-                        <TabsContent value="signed">
-                            {renderDocumentTable(signedDocuments.filter(doc =>
-                                doc.title.toLowerCase().includes(searchTerm.toLowerCase())
-                            ))}
-                        </TabsContent>
-                    </Tabs>
+                    <div className="flex items-center space-x-2">
+                        <Search className="w-4 h-4 text-gray-500" />
+                        <Input
+                            placeholder="Search documents..."
+                            className="max-w-sm"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
+
+                    <Card className="mt-4">
+                        <CardContent>
+                            <Tabs defaultValue="all" className="w-full">
+                                <TabsList className="mb-4">
+                                    <TabsTrigger value="all">All ({filteredDocuments.length})</TabsTrigger>
+                                    <TabsTrigger value="pending">Draft ({draftDocuments.length})</TabsTrigger>
+                                    <TabsTrigger value="ready">Ready ({readyDocuments.length})</TabsTrigger>
+                                    <TabsTrigger value="signed">Signed ({signedDocuments.length})</TabsTrigger>
+                                </TabsList>
+                                <TabsContent value="all">
+                                    {renderDocumentTable(filteredDocuments)}
+                                </TabsContent>
+                                <TabsContent value="pending">
+                                    {renderDocumentTable(draftDocuments.filter(doc =>
+                                        doc.title.toLowerCase().includes(searchTerm.toLowerCase())
+                                    ))}
+                                </TabsContent>
+                                <TabsContent value="ready">
+                                    {renderDocumentTable(readyDocuments.filter(doc =>
+                                        doc.title.toLowerCase().includes(searchTerm.toLowerCase())
+                                    ))}
+                                </TabsContent>
+                                <TabsContent value="signed">
+                                    {renderDocumentTable(signedDocuments.filter(doc =>
+                                        doc.title.toLowerCase().includes(searchTerm.toLowerCase())
+                                    ))}
+                                </TabsContent>
+                            </Tabs>
+                        </CardContent>
+                    </Card>
                 </CardContent>
             </Card>
         </>

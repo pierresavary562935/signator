@@ -34,3 +34,37 @@ export async function PATCH(
     );
   }
 }
+
+// edit user
+export async function PUT(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  const user = (await requiredCurrentUser()) as User;
+  if (!user || user.role !== "ADMIN") {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
+  }
+
+  const { id } = await params;
+
+  try {
+    const { name, email, role } = await req.json();
+
+    const updatedUser = await prisma.user.update({
+      where: { id: id },
+      data: { name, email, role },
+      include: {
+        signingRequests: true,
+        documents: true,
+      },
+    });
+
+    return NextResponse.json(updatedUser);
+  } catch (error) {
+    console.error("Error updating user:", error);
+    return NextResponse.json(
+      { message: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
