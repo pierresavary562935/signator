@@ -104,9 +104,6 @@ docker exec -it signator_app npx prisma migrate dev
 
 1. Access the application at [http://localhost:3000](http://localhost:3000).
 
-## Contributing
-Contributions are welcome! Please fork the repository, make your changes, and submit a pull request.
-
 ## Acknowledgments
 
 - [Next.js](https://nextjs.org/)
