@@ -58,9 +58,12 @@ yarn install
 pnpm install
 ```
 
-3. Configure environment variables by creating a `.env.local` file based on `.env.example`.
+3. Configure environment variables by creating a `.env.local` and  `.env` file
 
-4. Prisma setup:
+  - `.env.local` based on `.env.example`
+  - and `.env` with only DATABASE_URL inside (for prisma)
+
+5. Prisma setup:
    
 ```bash
 npx prisma generate
